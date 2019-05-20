@@ -29,34 +29,23 @@
         <div class="col-md-6 pad-15-ver" v-for="wonder in wonders_data" :key="wonder.id">
           <div
             class="card-inner"
-            @mouseover="show_hover(true,wonder.id)"
+            @mouseover="show_hover(true,wonder.comentario)"
             @mouseout="show_hover(false,0)"
           >
             <img class="card-img" :src="wonder.imageURL">
 
             <div class="card-bottom pad-15-hor" v-show="!hover_flag || active_id != wonder.id">
-              <div class="min-width-160">
-                <span class="bold">Ratings:</span>
-                <star-rating
-                  :rating="wonder.ratings"
-                  :show-rating="false"
-                  :inline="true"
-                  :star-size="15"
-                ></star-rating>
-              </div>
-              <div class="max-width-160">
-                <span class="bold">{{wonder.place}}</span>
+
+              <div>
+                <span class="bold">{{wonder.usuario}}</span>
+                <br />
+                <span class="bold">{{wonder.comentario}}</span>
+                <br />
+                <span class="bold">{{wonder.fecha}}</span>
               </div>
             </div>
 
-            <div :class="{'card-hover':1}" v-show="hover_flag && active_id == wonder.id">
-              <span
-                @click="make_active(wonder.id)"
-                :class="{'fas':1, 'fa-heart':1, 'absolute-star':1, 'green':check_active(wonder.id)}"
-              >{{wonder.likes}}</span>
-              <h5>{{wonder.place}}</h5>
-              <p>{{wonder.description}}</p>
-            </div>
+
           </div>
         </div>
       </div>
@@ -77,26 +66,24 @@ export default {
     var inside = this;
 
     axios
-      .get("https://www.mocky.io/v2/5c7b98562f0000c013e59f07")
+      .get("https://localhost:44374/api/values/GetData?pattern=%")
       .then(function(response) {
-        //console.log(response);
+        //console.log(response.data.result);
 
-        inside.wonders_data_actual = response.data.data;
+        inside.wonders_data_actual = response.data.result;
 
-        response.data.data.map(function(wonder) {
-          inside.likes.count += wonder.likes;
-        });
+        //response.data.data.map(function(wonder) {
+        //  inside.comnetario;
+        //});
 
-        inside.wonders_data_actual = inside.wonders_data_actual.map(function(
-          wonder
-        ) {
-          wonder.active_like = false;
-          return wonder;
-        });
-        inside.wonders_data = response.data.data;
+       //inside.wonders_data_actual = inside.wonders_data_actual.map(function(wonder) {
+       //  //wonder.active_like = false;
+       //  return wonder;
+       //});
+        inside.wonders_data = response.data.result;
       })
       .catch(function(error) {
-        // console.log(error);
+        alert(error);
       });
   },
   data() {
@@ -107,7 +94,7 @@ export default {
       active_id: 0,
       options: [
         { value: null, text: "Sort By" },
-        { value: "a", text: "Ratings" },
+        { value: "a", text: "fecha" },
         { value: "b", text: "Likes" }
       ],
       search: { filter: null, text: "" },
@@ -121,13 +108,14 @@ export default {
     },
     sort() {
       //console.log(this.search.filter);
-      this.search.filter == "b"
-        ? this.wonders_data.sort(function(a, b) {
-            return b.likes - a.likes;
-          })
-        : this.wonders_data.sort(function(a, b) {
-            return b.ratings - a.ratings;
-          });
+      (this.search.filter == "a")
+        ? this.wonders_data.sort( (a, b) => {
+            return new Date(a.fecha) < new Date(b.fecha);
+        })
+        
+        : '';
+
+        return this.wonders_data;
     },
     search_text() {
       //console.log(this.search.text);
@@ -136,40 +124,58 @@ export default {
 
       this.wonders_data = this.wonders_data_actual.filter(function(wonder) {
         if (
-          wonder.place
+          wonder.comentario
             .toLowerCase()
             .indexOf(inside.search.text.toLowerCase()) != "-1"
         ) {
           return wonder;
         }
-      });
-    },
-    check_active(id) {
-      var flag = false;
-      this.wonders_data_actual.map(function(wonder) {
-        if (wonder.id == id) {
-          flag = wonder.active_like;
-        }
-      });
-      return flag;
-    },
-    make_active(id) {
-      this.likes.hit++;
-      this.wonders_data_actual = this.wonders_data_actual.map(function(wonder) {
-        if (wonder.id == id) {
-          wonder.active_like = !wonder.active_like;
-          wonder.active_like ? wonder.likes++ : wonder.likes--;
+
+        if (
+          wonder.usuario
+            .toLowerCase()
+            .indexOf(inside.search.text.toLowerCase()) != "-1"
+        ) {
+          return wonder;
         }
 
-        return wonder;
-      });
-      var inside = this;
+        if (
+          wonder.fecha
+            .toLowerCase()
+            .indexOf(inside.search.text.toLowerCase()) != "-1"
+        ) {
+          return wonder;
+        }
 
-      inside.likes.count = 0;
-      this.wonders_data_actual.map(function(wonder) {
-        inside.likes.count += wonder.likes;
       });
     }
+    ,
+    //check_active(id) {
+    //  var flag = false;
+    //  this.wonders_data_actual.map(function(wonder) {
+    //    if (wonder.id == id) {
+    //      flag = wonder.active_like;
+    //    }
+    //  });
+    //  return flag;
+    //},
+  //  make_active(id) {
+  //    this.likes.hit++;
+  //    this.wonders_data_actual = this.wonders_data_actual.map(function(wonder) {
+  //      if (wonder.id == id) {
+  //        wonder.active_like = !wonder.active_like;
+  //        wonder.active_like ? wonder.likes++ : wonder.likes--;
+  //      }
+//
+  //      return wonder;
+  //    });
+  //    var inside = this;
+//
+  //    inside.likes.count = 0;
+  //    this.wonders_data_actual.map(function(wonder) {
+  //      inside.likes.count += wonder.likes;
+  //    });
+  //  }
   },
   components: {
     Header
@@ -205,15 +211,14 @@ export default {
 }
 
 .card-bottom {
-  position: absolute;
   bottom: 0;
   left: 0;
-  height: 30px;
   width: 100%;
   background-color: white;
   opacity: 0.7;
   display: flex;
   justify-content: space-between;
+  overflow: hidden;
 }
 
 .card-hover {
