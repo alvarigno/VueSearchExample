@@ -14,10 +14,8 @@
         </span>
       </div>
       <div>
-        <span class="bold">Total Likes:</span>
-        {{likes.count}}
-        <span class="bold">Hits:</span>
-        {{likes.hit}}
+        <span class="bold">Registros:</span>
+        {{comentario.count}}
       </div>
       <div>
         <b-form-select @input="sort()" v-model="search.filter" :options="options"/>
@@ -37,11 +35,11 @@
             <div class="card-bottom pad-15-hor" v-show="!hover_flag || active_id != wonder.id">
 
               <div>
-                <span class="bold">{{wonder.usuario}}</span>
+                <span class="bold"><small>Usuario:</small> {{wonder.usuario}}</span>
                 <br />
-                <span class="bold">{{wonder.comentario}}</span>
+                <span class="bold"><small>Comentario:</small> {{wonder.comentario}}</span>
                 <br />
-                <span class="bold">{{wonder.fecha}}</span>
+                <span class="bold"><small>Fecha:</small> {{wonder.fecha}}</span>
               </div>
             </div>
 
@@ -71,7 +69,6 @@ export default {
         //console.log(response.data.result);
 
         inside.wonders_data_actual = response.data.result;
-
         //response.data.data.map(function(wonder) {
         //  inside.comnetario;
         //});
@@ -98,7 +95,7 @@ export default {
         { value: "b", text: "Likes" }
       ],
       search: { filter: null, text: "" },
-      likes: { count: 0, hit: 0 }
+      comentario: { count: 0, hit: 0 }
     };
   },
   methods: {
@@ -114,7 +111,7 @@ export default {
         })
         
         : '';
-
+        
         return this.wonders_data;
     },
     search_text() {
