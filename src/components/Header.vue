@@ -1,7 +1,7 @@
 <template>
     <div class="pad-15-hor pad-15-ver header"> 
-            <div> <img src="@/assets/logo.png" width="25px"> Responsive Search </div>
-            <div> <i class="fas fa-bars"></i> </div>
+        <div> <img src="http://diseno.iconstruye.cl/ic/img/logo-ic.png" width="150px"> Buscador semnántico de comentarios </div>
+        <div> <i class="fas fa-bars"></i> </div>
     </div>
 </template>
 

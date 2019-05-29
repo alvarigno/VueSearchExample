@@ -7,17 +7,17 @@
           @input="search_text()"
           v-model="search.text"
           type="text"
-          placeholder="Search by Name"
+          placeholder="Busca por nombre, comentario y fecha."
         ></b-form-input>
         <span class="search-icon">
           <i class="fas fa-search"></i>
         </span>
       </div>
-      <div>
+      <div style="display:none;">
         <span class="bold">Registros:</span>
         {{comentario.count}}
       </div>
-      <div>
+      <div style="display:none;">
         <b-form-select @input="sort()" v-model="search.filter" :options="options"/>
       </div>
     </div>
@@ -64,7 +64,7 @@ export default {
     var inside = this;
 
     axios
-      .get("https://localhost:44374/api/values/GetData?pattern=%")
+      .get("https://localhost:5001/api/values/GetData?pattern=%")
       .then(function(response) {
         //console.log(response.data.result);
 
